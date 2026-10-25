@@ -1,9 +1,10 @@
 """Builds the TechVestVentures Global Riot Graphs site from Grok Bot's Oct 22 2026 Political Violence Focus Study (docx + G1-G10 PNGs). Text is taken verbatim from the study."""
 import os,re,sys,glob,shutil,docx
 from docx.oxml.ns import qn
-sys.path.insert(0,'/workspace/risk-watcher/graphs-site');os.chdir(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0,'/workspace/risk-watcher/graphs-site');sys.path.insert(0,'/workspace/risk-watcher');os.chdir(os.path.dirname(os.path.abspath(__file__)))
 import common
 from common import *
+import common,weekly_lib as WL
 T="TechVestVentures Global Riot Graphs";F="/workspace/risk-watcher/issues/2026-10-22"
 D=docx.Document(F+"/TVV Focus Study 2026-10-22 Political Violence.docx")
 def rich(p):
@@ -45,10 +46,15 @@ for q,lab,head,gs in SEC:
         x=f"<p>{extra[g]}</p>" if g in extra else ""
         figs.append(f'<figure class="g"><img src="img/{fn}" alt="Graph {g}" loading="lazy"><figcaption><p>{cap[g]}</p>{x}</figcaption></figure>')
     w(q,f"{q} {lab}",f'<h2 class="desk">{q}. {E(head)}</h2>'+"\n".join(figs))
+common.CSS+=WL.GRID_CSS
+WG=WL.add_tabs("Global Riot",w,E,save_img,start=6,note="Weekly Focus graphs: new charts are added each week from primary data. Each caption names its sources; numbers are not copied from third-party chart images.")
+allsrc_w=WL.sources("Global Riot")
 src=[];seen=set()
 for h in D.element.body.iter(qn('w:hyperlink')):
     rid=h.get(qn('r:id'));u=D.part.rels[rid].target_ref if rid else ''
     if u.startswith('https://') and u not in seen:
         seen.add(u);src.append((''.join(t.text or '' for t in h.iter(qn('w:t'))),u))
-w("sources","Sources",f'<h2 class="desk">Sources ({len(src)} links)</h2><p>From the TVV Focus Study of October 22, 2026: Political Violence, Organized Protest and Threat Profiles.</p><ul class="src">'+"".join(f'<li>{E(t)}: <a href="{E(u)}">{E(u)}</a></li>' for t,u in src)+"</ul>")
+for u,l in allsrc_w.items():
+    if u not in seen: seen.add(u);src.append((l,u))
+w("sources","Sources",f'<h2 class="desk">Sources ({len(src)} links)</h2><p>From the TVV Focus Study of October 22, 2026: Political Violence, Organized Protest and Threat Profiles, plus the weekly Focus graph collections.</p><ul class="src">'+"".join(f'<li>{E(t)}: <a href="{E(u)}">{E(u)}</a></li>' for t,u in src)+"</ul>")
 index(T,tabs,"Sections",cur="riot");print(len(src))
