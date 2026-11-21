@@ -31,9 +31,9 @@ SEC=[("Q1","Protest Waves","The Data Picture: Protest Waves Are Trigger-Driven, 
      ("Q4","Violence Share","Long-Run Context: France Is the Outlier on Protest Violence",[8,9]),
      ("Q5","Threat Counts","Threats Against Congress and German Extremist Violence",[10])]
 common.CSS+="""
-figure.g{display:grid;grid-template-columns:minmax(0,7fr) minmax(260px,3fr);gap:22px;align-items:start;margin:0 0 40px}
+figure.g{display:block;margin:0 0 40px}
 figure.g img{width:100%;height:auto;max-width:none}
-figure.g figcaption{font-size:18px;line-height:1.5;margin:0}figure.g figcaption p{margin:0 0 12px}
+figure.g figcaption{font-size:18px;line-height:1.5;margin:10px 0 0}figure.g figcaption p{margin:0 0 12px}
 figure.g figcaption .t{font-weight:700;display:block;margin-bottom:8px}
 @media(max-width:1100px){figure.g{grid-template-columns:1fr}}"""
 shutil.rmtree("issues",ignore_errors=True);os.makedirs("issues/img")
